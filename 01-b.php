@@ -33,13 +33,19 @@ function solve($path) {
     $right[] = (int)$parts[1];
   }
 
-  sort($left);
-  sort($right);
-
   $sum = 0;
 
   for ($i = 0; $i < count($left); $i++) {
-    $sum += abs($left[$i] - $right[$i]);
+    $val = $left[$i];
+    $occurences = 0;
+
+    for ($n = 0; $n < count($right); $n++) {
+      if ($val == $right[$n]) {
+        $occurences += 1;
+      }
+    }
+
+    $sum += $val * $occurences;
   }
 
   echo "Answer: $sum\n";
