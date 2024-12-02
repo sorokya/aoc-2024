@@ -96,7 +96,6 @@ function solve_b($path) {
   echo "Answer 2: $sum\n";
 }
 
-
 solve_a("/app/01.txt");
 solve_b("/app/01.txt");
 
