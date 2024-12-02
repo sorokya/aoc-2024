@@ -18,8 +18,53 @@ function solve_a($path) {
   $safe = 0;
 
   foreach ($lines as $line) {
+    if (is_safe($line)) {
+      $safe += 1;
+    }
+  }
+
+  echo "Answer 1: $safe\n";
+}
+
+function solve_b($path) {
+  if (!file_exists($path)) {
+    echo "Missing input file: $path";
+    exit;
+  }
+
+  $input = file_get_contents($path);
+
+  if ($input === false || strlen($input) === 0) {
+    echo "Invalid input file: $path";
+    exit;
+  }
+
+  $lines = explode("\n", $input);
+
+  $safe = 0;
+
+  foreach ($lines as $line) {
+    $levels = explode(" ", $line);
+    for ($i = 0; $i <= count($levels); $i++) {
+      $levelsCopy = $levels;
+      if ($i > 0) {
+        array_splice($levelsCopy, $i - 1, 1);
+      }
+
+      $levels_str = implode(" ", $levelsCopy);
+      if (is_safe($levels_str)) {
+        $safe += 1;
+        break;
+      }
+    }
+  }
+
+  echo "Answer 2: $safe\n";
+}
+
+function is_safe($line) {
     if ($line === "") {
-      continue; 
+      return false; 
     }
 
     $levels = array_map(fn($l): int => (int)$l, explode(" ", $line));
@@ -30,7 +75,7 @@ function solve_a($path) {
     rsort($desc);
 
     if ($levels != $asc && $levels != $desc) {
-      continue;
+      return false;
     }
 
     $valid = true;
@@ -54,66 +99,10 @@ function solve_a($path) {
       }
     }
 
-    if ($valid) {
-      $safe += 1;
-    }
-  }
-
-  echo "Safe: $safe\n";
-}
-
-function solve_b($path) {
-  if (!file_exists($path)) {
-    echo "Missing input file: $path";
-    exit;
-  }
-
-  $input = file_get_contents($path);
-
-  if ($input === false || strlen($input) === 0) {
-    echo "Invalid input file: $path";
-    exit;
-  }
-
-  $left = [];
-  $right = [];
-
-  $lines = explode("\n", $input);
-
-  foreach ($lines as $line) {
-    if ($line === "") {
-      continue; 
-    }
-
-    $parts = explode("   ", $line);
-    if (count($parts) !== 2) {
-      echo "Invalid line: $line";
-      exit;
-    }
-
-    $left[] = (int)$parts[0];
-    $right[] = (int)$parts[1];
-  }
-
-  $sum = 0;
-
-  for ($i = 0; $i < count($left); $i++) {
-    $val = $left[$i];
-    $occurences = 0;
-
-    for ($n = 0; $n < count($right); $n++) {
-      if ($val == $right[$n]) {
-        $occurences += 1;
-      }
-    }
-
-    $sum += $val * $occurences;
-  }
-
-  echo "Answer 2: $sum\n";
+    return $valid;
 }
 
 solve_a("/app/02.txt");
-// solve_b("/app/01.txt");
+solve_b("/app/02.txt");
 
 ?>
